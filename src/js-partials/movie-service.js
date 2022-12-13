@@ -81,14 +81,16 @@ function renderMovieList(movies) {
 }
 
 function buttonMarkup(array) {
-  return (markup = array
+  const markup = array
     .map(
       pageNumber =>
         `<li class="pagination-item">
           <button class="pagination-button" type="button">${pageNumber}</button>
         </li>`
     )
-    .join(''));
+    .join('');
+
+  return markup;
 }
 
 function makePagination(quantity) {
@@ -97,29 +99,35 @@ function makePagination(quantity) {
   let numberOfButtons = 0;
   const dots =
     '<li class="pagination-item"><button class="pagination-button" type="button">...</button></li>';
+  const firstButton =
+    '<li class="pagination-item"><button class="pagination-button" type="button">1</button></li>';
 
-  if (quantity === 1) {
-    numberOfButtons = 4;
-    for (let i = quantity; i <= numberOfButtons; i += 1) {
+  const lastButton =
+    '<li class="pagination-item"><button class="pagination-button" type="button">20</button></li>';
+
+  if (quantity >= 1 && quantity <= 3) {
+    numberOfButtons = 5;
+    for (let i = 1; i <= numberOfButtons; i += 1) {
       buttonArray.push(i);
     }
     const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${markup} ${dots}`;
+    paginationMarkup = `${markup} ${dots} ${lastButton}`;
   }
-  if (quantity > 1 && quantity < 17) {
-    numberOfButtons = quantity + 3;
-    for (let i = quantity; i <= numberOfButtons; i += 1) {
+  if (quantity > 3 && quantity < 18) {
+    numberOfButtons = quantity + 2;
+    const startButton = quantity - 2;
+    for (let i = startButton; i <= numberOfButtons; i += 1) {
       buttonArray.push(i);
     }
     const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${dots} ${markup} ${dots}`;
+    paginationMarkup = `${firstButton} ${dots} ${markup} ${dots} ${lastButton}`;
   }
-  if (quantity >= 17) {
-    for (let i = quantity; i <= 20; i += 1) {
+  if (quantity >= 18) {
+    for (let i = 16; i <= 20; i += 1) {
       buttonArray.push(i);
     }
     const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${dots} ${markup}`;
+    paginationMarkup = `${firstButton} ${dots} ${markup}`;
   }
   paginationList.innerHTML = paginationMarkup;
 }
