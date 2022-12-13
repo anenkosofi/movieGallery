@@ -295,7 +295,7 @@ function onModalWindowOpen(e) {
 
   backdrop.classList.remove('is-hidden');
 
-  window.addEventListener('keydown', onEscClose);
+  document.addEventListener('keydown', onEscClose);
 }
 
 function renderMovieModal({
@@ -366,6 +366,7 @@ function onBackdropClick(e) {
 
 function onEscClose(e) {
   if (e.code === 'Escape') {
+    document.removeEventListener('keydown', onEscClose);
     onModalWindowClose();
   }
 }
