@@ -4,7 +4,7 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 
-fetchMovies((pageNumber = 1))
+fetchMovies()
   .then(({ results }) => {
     let pageNumber = 1;
     renderMovieList(results);
@@ -15,7 +15,7 @@ fetchMovies((pageNumber = 1))
   })
   .catch(error => console.log(error));
 
-async function fetchMovies(page) {
+async function fetchMovies(page = 1) {
   const response = await fetch(
     `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`
   );
