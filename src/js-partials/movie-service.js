@@ -4,26 +4,29 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 
-let pageNumber = 1;
-
-fetchMovies()
+fetchMovies((pageNumber = 1))
   .then(({ results }) => {
+    let pageNumber = 1;
     renderMovieList(results);
     makePagination(pageNumber);
     makeButtonActive(pageNumber);
+
+    paginationList.addEventListener('click', onButtonClick);
   })
   .catch(error => console.log(error));
 
-paginationList.addEventListener('click', onButtonClick);
-
-async function fetchMovies() {
+async function fetchMovies(page) {
   const response = await fetch(
-    `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${pageNumber}`
+    `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`
   );
   if (!response.ok) {
     throw new Error(response.status);
   }
   return await response.json();
+}
+
+function clearMarkup(container) {
+  container.innerHTML = '';
 }
 
 const genres = {
@@ -120,13 +123,15 @@ function makePagination(quantity) {
     const markup = buttonMarkup(buttonArray);
     paginationMarkup = `${dots} ${markup}`;
   }
-  const leftArrowButton = paginationList.firstElementChild;
-  leftArrowButton.insertAdjacentHTML('afterend', paginationMarkup);
+  paginationList.innerHTML = paginationMarkup;
 }
 
 function makeButtonActive(number) {
   const buttons = document.querySelectorAll('.pagination-button');
   [...buttons].map(button => {
+    if (button.classList.contains('active')) {
+      button.classList.remove('active');
+    }
     if (button.textContent == number) {
       button.classList.add('active');
     }
@@ -134,18 +139,20 @@ function makeButtonActive(number) {
 }
 
 function onButtonClick(e) {
+  console.dir(e.target);
   if (e.target.nodeName !== 'BUTTON') {
     return;
   }
   if (e.target.textContent) {
-    pageNumber = e.target.textContent;
-    fetchMovies()
+    pageNumber = Number(e.target.textContent);
+    clearMarkup(movieList);
+    fetchMovies(pageNumber)
       .then(({ results }) => {
         renderMovieList(results);
-        // !Number.isNaN(Number(e.target.textContent));
-        // makePagination(pageNumber);
-        // makeButtonActive(pageNumber);
       })
       .catch(error => console.log(error));
+    clearMarkup(paginationList);
+    makePagination(pageNumber);
+    makeButtonActive(pageNumber);
   }
 }
