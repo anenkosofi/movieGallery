@@ -1,0 +1,120 @@
+.library-header {
+  background-color: rgba(0, 0, 0, 0.56);
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  @media screen and (max-width: 767px) {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.56),
+        rgba(0, 0, 0, 0.56)
+      ),
+      url('../images/watched-bg@1x-mobile.jpg');
+
+    @media screen and (min-device-pixel-ratio: 2),
+      screen and (min-resolution: 192dpi),
+      screen and (min-resolution: 2dppx) {
+      background-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.56),
+          rgba(0, 0, 0, 0.56)
+        ),
+        url('../images/watched-bg@2x-mobile.jpg');
+    }
+  }
+  @media screen and (min-width: 768px) {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.56),
+        rgba(0, 0, 0, 0.56)
+      ),
+      url('../images/watched-bg@1x-tablet.jpg');
+
+    @media screen and (min-device-pixel-ratio: 2),
+      screen and (min-resolution: 192dpi),
+      screen and (min-resolution: 2dppx) {
+      background-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.56),
+          rgba(0, 0, 0, 0.56)
+        ),
+        url('../images/watched-bg@2x-tablet.jpg');
+    }
+  }
+  @media screen and (min-width: 1280px) {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.56),
+        rgba(0, 0, 0, 0.56)
+      ),
+      url('../images/watched-bg@1x-desktop.jpg');
+
+    @media screen and (min-device-pixel-ratio: 2),
+      screen and (min-resolution: 192dpi),
+      screen and (min-resolution: 2dppx) {
+      background-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0.56),
+          rgba(0, 0, 0, 0.56)
+        ),
+        url('../images/watched-bg@2x-desktop.jpg');
+    }
+  }
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+
+  @media screen and (min-width: 768px) {
+    gap: 32px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    gap: 16px;
+  }
+
+  &--modal {
+    gap: 20px;
+
+    @media screen and (min-width: 768px) {
+      gap: 15px;
+    }
+
+    @media screen and (min-width: 768px) {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.button {
+  padding: 14px 41px 12px;
+  min-width: 130px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: calc(16 / 12);
+
+  text-transform: uppercase;
+
+  color: #ffffff;
+  background: #ff6b01;
+  border-radius: 5px;
+  border: none;
+
+  cursor: pointer;
+
+  @media screen and (min-width: 768px) {
+    width: 152px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    width: 148px;
+  }
+}
+
+.queue {
+  background-color: transparent;
+  border: 1px solid #ffffff;
+}
