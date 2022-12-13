@@ -49,8 +49,22 @@
 }
 
 .movie-info {
+  display: flex;
+  align-items: flex-end;
   font-size: 20px;
   line-height: calc(24 / 20);
 
   color: #ff6b08;
+}
+
+.vote-average {
+  margin-left: 5px;
+  padding: 3px 12px;
+  font-size: 12px;
+  line-height: calc(14 / 12);
+
+  color: #ffffff;
+  background-color: #ff6b08;
+
+  border-radius: 5px;
 }

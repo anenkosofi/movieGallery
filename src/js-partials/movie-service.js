@@ -4,8 +4,6 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 const bodyRect = document.querySelector('body').getBoundingClientRect();
-const backwardButton = document.querySelector('.arrow-left');
-const forwardButton = document.querySelector('.arrow-right');
 
 fetchMovies()
   .then(({ results }) => {
@@ -15,8 +13,11 @@ fetchMovies()
     makeButtonActive(pageNumber);
 
     paginationList.addEventListener('click', onButtonClick);
+    const backwardButton = document.querySelector('.arrow-left');
+    const forwardButton = document.querySelector('.arrow-right');
     backwardButton.addEventListener('click', onBackwardButtonClick);
     forwardButton.addEventListener('click', onForwardButtonClick);
+    const movieLink = document.querySelector('.movie-link');
   })
   .catch(error => console.log(error));
 
@@ -101,10 +102,15 @@ function getFullYear(date) {
   return year;
 }
 
+function roundAverageVote(vote) {
+  const roundedVote = vote.toFixed(1);
+  return roundedVote;
+}
+
 function renderMovieList(movies) {
   const markup = movies
     .map(
-      ({ poster_path, title, genre_ids, release_date }) =>
+      ({ poster_path, title, genre_ids, release_date, vote_average }) =>
         `<li class="movie-list__item">
           <a class="movie-link" href="" data-modal-open>
             <img class="movie-image" src="https://image.tmdb.org/t/p/w500${poster_path}" alt="" width="375" />
@@ -112,7 +118,11 @@ function renderMovieList(movies) {
               <h2 class="movie-title">${title}</h2>
               <p class="movie-info">${genresIdConverter(
                 genre_ids
-              )} | ${getFullYear(release_date)}</p>
+              )} | ${getFullYear(
+          release_date
+        )}<span class="vote-average">${roundAverageVote(
+          vote_average
+        )}</span></p>
             </div>
           </a>
         </li>`
@@ -220,4 +230,57 @@ function onButtonClick(e) {
     makePagination(pageNumber);
     makeButtonActive(pageNumber);
   }
+}
+
+function renderMovieModal(movies) {
+  const markup = movies.map(
+    ({
+      genre_ids,
+      original_title,
+      overview,
+      popularity,
+      poster_path,
+      title,
+      vote_average,
+      vote_count,
+    }) =>
+      `<img src="${poster_path}" alt="" width="375" />
+    <div class="movie-details">
+      <h3 class="movie-heading">${title}</h3>
+      <ul class="movie-list-info">
+        <li class="movie-list-info__item">
+          <p class="movie-testimonial">Vote / Votes</p>
+          <p class="movie-mark">
+            <span class="rating">${vote_count}</span><span class="delimeter">/</span
+            ><span class="quantity">${vote_average}</span>
+          </p>
+        </li>
+        <li class="movie-list-info__item">
+          <p class="movie-testimonial">Popularity</p>
+          <p class="movie-mark">${popularity}</p>
+        </li>
+        <li class="movie-list-info__item">
+          <p class="movie-testimonial">Original Title</p>
+          <p class="movie-mark movie-mark--original-title">${original_title}</p>
+        </li>
+        <li class="movie-list-info__item">
+          <p class="movie-testimonial">Genre</p>
+          <p class="movie-mark">Western</p>
+        </li>
+      </ul>
+      <p class="about">About</p>
+      <p class="about-descr">${overview}</p>
+      <div class="button-wrapper button-wrapper--modal">
+        <button class="button modal-button" type="button">
+          Add to watched
+        </button>
+        <button
+          class="button queue modal-button modal-button-queue"
+          type="button"
+        >
+          Add to queue
+        </button>
+      </div>
+    </div>`
+  );
 }
