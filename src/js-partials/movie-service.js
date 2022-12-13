@@ -214,12 +214,11 @@ function clearMarkup(container) {
 }
 
 function onButtonClick(e) {
-  console.dir(e.target);
   if (e.target.nodeName !== 'BUTTON') {
     return;
   }
   if (e.target.textContent) {
-    pageNumber = Number(e.target.textContent);
+    const pageNumber = Number(e.target.textContent);
     clearMarkup(movieList);
     fetchMovies(pageNumber)
       .then(({ results }) => {
