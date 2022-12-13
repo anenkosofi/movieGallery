@@ -3,6 +3,9 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 
 const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
+const bodyRect = document.querySelector('body').getBoundingClientRect();
+const backwardButton = document.querySelector('.arrow-left');
+const forwardButton = document.querySelector('.arrow-right');
 
 fetchMovies()
   .then(({ results }) => {
@@ -12,8 +15,46 @@ fetchMovies()
     makeButtonActive(pageNumber);
 
     paginationList.addEventListener('click', onButtonClick);
+    backwardButton.addEventListener('click', onBackwardButtonClick);
+    forwardButton.addEventListener('click', onForwardButtonClick);
   })
   .catch(error => console.log(error));
+
+function onBackwardButtonClick() {
+  const buttons = document.querySelectorAll('.pagination-button');
+  [...buttons].map(button => {
+    if (button.classList.contains('active')) {
+      const currentPageNumber = Number(button.textContent);
+      const pageNumberToClick = currentPageNumber - 1;
+      fetchMovies(pageNumberToClick)
+        .then(({ results }) => {
+          renderMovieList(results);
+        })
+        .catch(error => console.log(error));
+      clearMarkup(paginationList);
+      makePagination(pageNumberToClick);
+      makeButtonActive(pageNumberToClick);
+    }
+  });
+}
+
+function onForwardButtonClick() {
+  const buttons = document.querySelectorAll('.pagination-button');
+  [...buttons].map(button => {
+    if (button.classList.contains('active')) {
+      const currentPageNumber = Number(button.textContent);
+      const pageNumberToClick = currentPageNumber + 1;
+      fetchMovies(pageNumberToClick)
+        .then(({ results }) => {
+          renderMovieList(results);
+        })
+        .catch(error => console.log(error));
+      clearMarkup(paginationList);
+      makePagination(pageNumberToClick);
+      makeButtonActive(pageNumberToClick);
+    }
+  });
+}
 
 async function fetchMovies(page = 1) {
   const response = await fetch(
@@ -38,7 +79,7 @@ const genres = {
   53: 'Thriller',
   80: 'Crime',
   99: 'Documentary',
-  878: 'Science Fiction',
+  878: 'Sci-Fi',
   9648: 'Mystery',
   10402: 'Music',
   10749: 'Romance',
@@ -50,7 +91,7 @@ const genres = {
 function genresIdConverter(genreIds) {
   return (genreIds = genreIds
     .map(genreId => (genreId = genres[genreId]))
-    .slice(0, 2)
+    .slice(0, 3)
     .join(', '));
 }
 
@@ -110,25 +151,39 @@ function makePagination(quantity) {
     for (let i = 1; i <= numberOfButtons; i += 1) {
       buttonArray.push(i);
     }
-    const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${markup} ${dots} ${lastButton}`;
-  }
-  if (quantity > 3 && quantity < 18) {
+    if (bodyRect.width < 768) {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${markup}`;
+    } else {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${markup} ${dots} ${lastButton}`;
+    }
+  } else if (quantity > 3 && quantity < 18) {
     numberOfButtons = quantity + 2;
     const startButton = quantity - 2;
     for (let i = startButton; i <= numberOfButtons; i += 1) {
       buttonArray.push(i);
     }
-    const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${firstButton} ${dots} ${markup} ${dots} ${lastButton}`;
-  }
-  if (quantity >= 18) {
+    if (bodyRect.width < 768) {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${markup}`;
+    } else {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${firstButton} ${dots} ${markup} ${dots} ${lastButton}`;
+    }
+  } else if (quantity >= 18) {
     for (let i = 16; i <= 20; i += 1) {
       buttonArray.push(i);
     }
-    const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${firstButton} ${dots} ${markup}`;
+    if (bodyRect.width < 768) {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${markup}`;
+    } else {
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${firstButton} ${dots} ${markup}`;
+    }
   }
+
   paginationList.innerHTML = paginationMarkup;
 }
 
