@@ -25,10 +25,6 @@ async function fetchMovies(page = 1) {
   return await response.json();
 }
 
-function clearMarkup(container) {
-  container.innerHTML = '';
-}
-
 const genres = {
   12: 'Adventure',
   14: 'Fantasy',
@@ -59,7 +55,9 @@ function genresIdConverter(genreIds) {
 }
 
 function getFullYear(date) {
-  return (year = new Date(date).getFullYear());
+  const year = new Date(date).getFullYear();
+
+  return year;
 }
 
 function renderMovieList(movies) {
@@ -136,6 +134,10 @@ function makeButtonActive(number) {
       button.classList.add('active');
     }
   });
+}
+
+function clearMarkup(container) {
+  container.innerHTML = '';
 }
 
 function onButtonClick(e) {
