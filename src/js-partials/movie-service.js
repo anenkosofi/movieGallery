@@ -6,6 +6,13 @@ const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 const paginationContainer = document.querySelector('.pagination');
 const bodyRect = document.querySelector('body').getBoundingClientRect();
+const modalWindow = document.querySelector('.information');
+const backdrop = document.querySelector('.backdrop');
+const closeButton = document.querySelector('.close-button');
+
+movieList.addEventListener('click', onModalWindowOpen);
+closeButton.addEventListener('click', onModalWindowClose);
+backdrop.addEventListener('click', onBackdropClick);
 
 fetchMovies()
   .then(({ results }) => {
@@ -20,7 +27,6 @@ fetchMovies()
     const forwardButton = document.querySelector('.arrow-right');
     backwardButton.addEventListener('click', onBackwardButtonClick);
     forwardButton.addEventListener('click', onForwardButtonClick);
-    const movieLink = document.querySelector('.movie-link');
   })
   .catch(error => console.log(error));
 
@@ -30,6 +36,25 @@ function onBackwardButtonClick() {
     if (button.classList.contains('active')) {
       const currentPageNumber = Number(button.textContent);
       const pageNumberToClick = currentPageNumber - 1;
+      fetchMovies(pageNumberToClick)
+        .then(({ results }) => {
+          renderMovieList(results);
+        })
+        .catch(error => console.log(error));
+      clearMarkup(paginationList);
+      makePagination(pageNumberToClick);
+      makeButtonDisabled(pageNumberToClick);
+      makeButtonActive(pageNumberToClick);
+    }
+  });
+}
+
+function onForwardButtonClick() {
+  const buttons = document.querySelectorAll('.pagination-button');
+  [...buttons].map(button => {
+    if (button.classList.contains('active')) {
+      const currentPageNumber = Number(button.textContent);
+      const pageNumberToClick = currentPageNumber + 1;
       fetchMovies(pageNumberToClick)
         .then(({ results }) => {
           renderMovieList(results);
@@ -67,28 +92,19 @@ function makeButtonDisabled(pageNumber) {
   }
 }
 
-function onForwardButtonClick() {
-  const buttons = document.querySelectorAll('.pagination-button');
-  [...buttons].map(button => {
-    if (button.classList.contains('active')) {
-      const currentPageNumber = Number(button.textContent);
-      const pageNumberToClick = currentPageNumber + 1;
-      fetchMovies(pageNumberToClick)
-        .then(({ results }) => {
-          renderMovieList(results);
-        })
-        .catch(error => console.log(error));
-      clearMarkup(paginationList);
-      makePagination(pageNumberToClick);
-      makeButtonDisabled(pageNumberToClick);
-      makeButtonActive(pageNumberToClick);
-    }
-  });
-}
-
 async function fetchMovies(page = 1) {
   const response = await fetch(
     `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`
+  );
+  if (!response.ok) {
+    throw new Error(response.status);
+  }
+  return await response.json();
+}
+
+async function fetchMovieDetails(movieId) {
+  const response = await fetch(
+    `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
   );
   if (!response.ok) {
     throw new Error(response.status);
@@ -146,12 +162,11 @@ function checkImageSrc(src) {
 function renderMovieList(movies) {
   const markup = movies
     .map(
-      ({ poster_path, title, genre_ids, release_date, vote_average }) =>
-        `<li class="movie-list__item">
-          <a class="movie-link" href="" data-modal-open>
+      ({ id, poster_path, title, genre_ids, release_date, vote_average }) =>
+        `<li class="movie-list__item" data-id="${id}">
             <img class="movie-image" ${checkImageSrc(
               poster_path
-            )} alt="Movie poster" width="375" />
+            )} alt="Movie poster" loading="lazy" />
             <div class="movie-descr">
               <h2 class="movie-title">${title || 'Unknown'}</h2>
               <p class="movie-info">${
@@ -160,7 +175,6 @@ function renderMovieList(movies) {
           getFullYear(release_date) || 'Unknown'
         }<span class="vote-average">${roundAverageVote(vote_average)}</span></p>
             </div>
-          </a>
         </li>`
     )
     .join('');
@@ -268,32 +282,48 @@ function onButtonClick(e) {
   }
 }
 
-function renderMovieModal(movies) {
-  const markup = movies.map(
-    ({
-      genre_ids,
-      original_title,
-      overview,
-      popularity,
-      poster_path,
-      title,
-      vote_average,
-      vote_count,
-    }) =>
-      `<img src="${poster_path}" alt="" width="375" />
+function onModalWindowOpen(e) {
+  let movieId = 0;
+  if (e.target.closest('li')) {
+    movieId = e.target.closest('li').dataset.id;
+  }
+
+  clearMarkup(modalWindow);
+  fetchMovieDetails(movieId)
+    .then(movie => renderMovieModal(movie))
+    .catch(error => console.log(error));
+
+  backdrop.classList.remove('is-hidden');
+
+  window.addEventListener('keydown', onEscClose);
+}
+
+function renderMovieModal({
+  genres,
+  original_title,
+  overview,
+  popularity,
+  poster_path,
+  title,
+  vote_average,
+  vote_count,
+}) {
+  const markup = `<img ${checkImageSrc(poster_path)} alt="Movie poster"  />
     <div class="movie-details">
       <h3 class="movie-heading">${title}</h3>
       <ul class="movie-list-info">
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Vote / Votes</p>
           <p class="movie-mark">
-            <span class="rating">${vote_count}</span><span class="delimeter">/</span
-            ><span class="quantity">${vote_average}</span>
+            <span class="rating">${roundAverageVote(
+              vote_average
+            )}</span><span class="delimeter">/</span
+            ><span class="quantity">${vote_count}</span>
           </p>
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Popularity</p>
-          <p class="movie-mark">${popularity}</p>
+          <p class="movie-mark">${roundAverageVote(popularity)}</p>
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Original Title</p>
@@ -301,7 +331,9 @@ function renderMovieModal(movies) {
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Genre</p>
-          <p class="movie-mark">${genresIdConverter(genre_ids)}</p>
+          <p class="movie-mark">${genres
+            .map(genre => genre.name)
+            .join(', ')}</p>
         </li>
       </ul>
       <p class="about">About</p>
@@ -317,6 +349,23 @@ function renderMovieModal(movies) {
           Add to queue
         </button>
       </div>
-    </div>`
-  );
+    </div>`;
+
+  modalWindow.innerHTML = markup;
+}
+
+function onModalWindowClose() {
+  backdrop.classList.add('is-hidden');
+}
+
+function onBackdropClick(e) {
+  if (e.currentTarget === e.target) {
+    onModalWindowClose();
+  }
+}
+
+function onEscClose(e) {
+  if (e.code === 'Escape') {
+    onModalWindowClose();
+  }
 }
