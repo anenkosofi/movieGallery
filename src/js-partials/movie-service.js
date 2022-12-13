@@ -1,8 +1,10 @@
+import defaultImage from '../images/placeholder.png';
 const API_KEY = 'bfcd7a06a5bb09fb5aafe756d2f60f73';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
+const paginationContainer = document.querySelector('.pagination');
 const bodyRect = document.querySelector('body').getBoundingClientRect();
 
 fetchMovies()
@@ -10,6 +12,7 @@ fetchMovies()
     let pageNumber = 1;
     renderMovieList(results);
     makePagination(pageNumber);
+    makeButtonDisabled(pageNumber);
     makeButtonActive(pageNumber);
 
     paginationList.addEventListener('click', onButtonClick);
@@ -34,9 +37,34 @@ function onBackwardButtonClick() {
         .catch(error => console.log(error));
       clearMarkup(paginationList);
       makePagination(pageNumberToClick);
+      makeButtonDisabled(pageNumberToClick);
       makeButtonActive(pageNumberToClick);
     }
   });
+}
+
+function makeButtonDisabled(pageNumber) {
+  const firstChild = paginationContainer.firstElementChild;
+  const lastChild = paginationContainer.lastElementChild;
+  if (pageNumber === 1) {
+    firstChild.disabled = 'true';
+    if (lastChild.hasAttribute('disabled')) {
+      lastChild.removeAttribute('disabled');
+    }
+  } else if (pageNumber === 20) {
+    lastChild.disabled = 'true';
+    if (firstChild.hasAttribute('disabled')) {
+      firstChild.removeAttribute('disabled');
+    }
+  } else {
+    if (firstChild.hasAttribute('disabled')) {
+      console.log(firstChild.hasAttribute('disabled'));
+      firstChild.removeAttribute('disabled');
+    }
+    if (lastChild.hasAttribute('disabled')) {
+      lastChild.removeAttribute('disabled');
+    }
+  }
 }
 
 function onForwardButtonClick() {
@@ -52,6 +80,7 @@ function onForwardButtonClick() {
         .catch(error => console.log(error));
       clearMarkup(paginationList);
       makePagination(pageNumberToClick);
+      makeButtonDisabled(pageNumberToClick);
       makeButtonActive(pageNumberToClick);
     }
   });
@@ -107,22 +136,29 @@ function roundAverageVote(vote) {
   return roundedVote;
 }
 
+function checkImageSrc(src) {
+  if (src) {
+    return `src="https://image.tmdb.org/t/p/w500${src}"`;
+  }
+  return `src="${defaultImage}"`;
+}
+
 function renderMovieList(movies) {
   const markup = movies
     .map(
       ({ poster_path, title, genre_ids, release_date, vote_average }) =>
         `<li class="movie-list__item">
           <a class="movie-link" href="" data-modal-open>
-            <img class="movie-image" src="https://image.tmdb.org/t/p/w500${poster_path}" alt="" width="375" />
+            <img class="movie-image" ${checkImageSrc(
+              poster_path
+            )} alt="Movie poster" width="375" />
             <div class="movie-descr">
-              <h2 class="movie-title">${title}</h2>
-              <p class="movie-info">${genresIdConverter(
-                genre_ids
-              )} | ${getFullYear(
-          release_date
-        )}<span class="vote-average">${roundAverageVote(
-          vote_average
-        )}</span></p>
+              <h2 class="movie-title">${title || 'Unknown'}</h2>
+              <p class="movie-info">${
+                genresIdConverter(genre_ids) || 'Other'
+              } | ${
+          getFullYear(release_date) || 'Unknown'
+        }<span class="vote-average">${roundAverageVote(vote_average)}</span></p>
             </div>
           </a>
         </li>`
@@ -203,7 +239,7 @@ function makeButtonActive(number) {
     if (button.classList.contains('active')) {
       button.classList.remove('active');
     }
-    if (button.textContent == number) {
+    if (Number(button.textContent) === number) {
       button.classList.add('active');
     }
   });
@@ -227,6 +263,7 @@ function onButtonClick(e) {
       .catch(error => console.log(error));
     clearMarkup(paginationList);
     makePagination(pageNumber);
+    makeButtonDisabled(pageNumber);
     makeButtonActive(pageNumber);
   }
 }
@@ -264,7 +301,7 @@ function renderMovieModal(movies) {
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Genre</p>
-          <p class="movie-mark">Western</p>
+          <p class="movie-mark">${genresIdConverter(genre_ids)}</p>
         </li>
       </ul>
       <p class="about">About</p>
