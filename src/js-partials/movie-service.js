@@ -14,23 +14,27 @@ movieList.addEventListener('click', onModalWindowOpen);
 closeButton.addEventListener('click', onModalWindowClose);
 backdrop.addEventListener('click', onBackdropClick);
 
-fetchMovies()
-  .then(({ results }) => {
-    let pageNumber = 1;
-    renderMovieList(results);
-    makePagination(pageNumber);
-    makeButtonDisabled(pageNumber);
-    makeButtonActive(pageNumber);
+onHomePageLoad();
 
-    paginationList.addEventListener('click', onButtonClick);
-    const backwardButton = document.querySelector('.arrow-left');
-    const forwardButton = document.querySelector('.arrow-right');
-    backwardButton.classList.remove('is-hidden');
-    forwardButton.classList.remove('is-hidden');
-    backwardButton.addEventListener('click', onBackwardButtonClick);
-    forwardButton.addEventListener('click', onForwardButtonClick);
-  })
-  .catch(error => console.log(error));
+function onHomePageLoad() {
+  let pageNumber = 1;
+
+  fetchMovies()
+    .then(({ results }) => renderMovieList(results))
+    .catch(error => console.log(error));
+
+  makePagination(pageNumber);
+  makeButtonDisabled(pageNumber);
+  makeButtonActive(pageNumber);
+
+  paginationList.addEventListener('click', onButtonClick);
+  const backwardButton = document.querySelector('.arrow-left');
+  const forwardButton = document.querySelector('.arrow-right');
+  backwardButton.classList.remove('is-hidden');
+  forwardButton.classList.remove('is-hidden');
+  backwardButton.addEventListener('click', onBackwardButtonClick);
+  forwardButton.addEventListener('click', onForwardButtonClick);
+}
 
 function onBackwardButtonClick() {
   const buttons = document.querySelectorAll('.pagination-button');
@@ -85,7 +89,6 @@ function makeButtonDisabled(pageNumber) {
     }
   } else {
     if (firstChild.hasAttribute('disabled')) {
-      console.log(firstChild.hasAttribute('disabled'));
       firstChild.removeAttribute('disabled');
     }
     if (lastChild.hasAttribute('disabled')) {
@@ -199,7 +202,7 @@ function makePagination(quantity) {
   let paginationMarkup = '';
   let numberOfButtons = 0;
   const dots =
-    '<li class="pagination-item"><button class="pagination-button" type="button">...</button></li>';
+    '<li class="pagination-item"><button class="pagination-button" type="button" disabled>...</button></li>';
   const firstButton =
     '<li class="pagination-item"><button class="pagination-button" type="button">1</button></li>';
 
@@ -296,8 +299,10 @@ function onModalWindowOpen(e) {
   fetchMovieDetails(movieId)
     .then(movie => {
       renderMovieModal(movie);
-      const addToWatched = document.querySelector('[data-action="watched"]');
-      addToWatched.addEventListener('click', onAddToWatched);
+      const modalButtons = document.querySelector(
+        '[data-name="modal-wrapper"]'
+      );
+      modalButtons.addEventListener('click', onAddMovie);
     })
     .catch(error => console.log(error));
 
@@ -305,7 +310,15 @@ function onModalWindowOpen(e) {
   document.addEventListener('keydown', onEscClose);
 }
 
-function onAddToWatched() {
+function onAddMovie(e) {
+  let localStorageKey = '';
+  if (e.target.closest('button')) {
+    localStorageKey = e.target.closest('button').dataset.action;
+    addToLocalStorage(localStorageKey);
+  }
+}
+
+function addToLocalStorage(key) {
   const id = document.querySelector('.information').dataset.id;
   const genres = document.querySelector('[data-name="genres"]').textContent;
   const originalTitle = document.querySelector(
@@ -315,7 +328,7 @@ function onAddToWatched() {
   const popularity = document.querySelector(
     '[data-name="popularity"]'
   ).textContent;
-  const poster_path = document.querySelector('[data-name="poster-path"]').src;
+  const posterPath = document.querySelector('[data-name="poster-path"]').src;
   const title = document.querySelector('[data-name="title"]').textContent;
   const voteAverage = document.querySelector(
     '[data-name="vote-average"]'
@@ -324,8 +337,7 @@ function onAddToWatched() {
     '[data-name="vote-count"]'
   ).textContent;
 
-  const LOCAL_STORAGE_KEY = 'addToWatched';
-  let savedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  let savedData = JSON.parse(localStorage.getItem(key));
   if (!savedData) {
     const movies = [];
     const movie = {
@@ -334,14 +346,14 @@ function onAddToWatched() {
       originalTitle,
       overview,
       popularity,
-      poster_path,
+      posterPath,
       title,
       voteAverage,
       voteCount,
     };
     movies.push(movie);
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(movies));
+    localStorage.setItem(key, JSON.stringify(movies));
   } else {
     const movies = [...savedData];
     const movie = {
@@ -350,14 +362,14 @@ function onAddToWatched() {
       originalTitle,
       overview,
       popularity,
-      poster_path,
+      posterPath,
       title,
       voteAverage,
       voteCount,
     };
     movies.push(movie);
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(movies));
+    localStorage.setItem(key, JSON.stringify(movies));
   }
 }
 
@@ -406,14 +418,14 @@ function renderMovieModal({
       </ul>
       <p class="about">About</p>
       <p class="about-descr" data-name="overview">${overview}</p>
-      <div class="button-wrapper button-wrapper--modal">
-      <button class="button modal-button" type="button" data-action="watched">
+      <div class="button-wrapper button-wrapper--modal" data-name="modal-wrapper">
+      <button class="button modal-button" type="button" data-action="add-to-watched">
         Add to watched
       </button>
       <button
         class="button modal-button"
         type="button"
-        data-action="queue"
+        data-action="add-to-queue"
       >
         Add to queue
       </button>
@@ -440,50 +452,3 @@ function onEscClose(e) {
     onModalWindowClose();
   }
 }
-
-const homePage = document.querySelector('[data-page="home"]');
-const libraryPage = document.querySelector('[data-page="library"]');
-
-homePage.addEventListener('click', onHomePageLoad);
-
-function onHomePageLoad() {
-  let pageNumber = 1;
-
-  fetchMovies()
-    .then(({ results }) => renderMovieList(results))
-    .catch(error => console.log(error));
-
-  makePagination(pageNumber);
-  makeButtonDisabled(pageNumber);
-  makeButtonActive(pageNumber);
-
-  paginationList.addEventListener('click', onButtonClick);
-  const backwardButton = document.querySelector('.arrow-left');
-  const forwardButton = document.querySelector('.arrow-right');
-  backwardButton.addEventListener('click', onBackwardButtonClick);
-  forwardButton.addEventListener('click', onForwardButtonClick);
-}
-
-// libraryPage.addEventListener('click', onLibraryPageLoad);
-
-// function onLibraryPageLoad() {
-//   clearMarkup(movieList);
-//   const moviesToWatched = JSON.parsed(localStorage.getItem('addToWatched'));
-//   renderMovieListInMyLibrary(moviesToWatched);
-// }
-
-// function renderMovieListInMyLibrary(movies) {
-//   const markup = movies
-//     .map(
-//       ({ id, posterPath, title, genres, release_date }) =>
-//         `<li class="movie-list__item" data-id="${id}">
-//             <img class="movie-image" src="${posterPath} alt="Movie poster" loading="lazy" />
-//             <div class="movie-descr">
-//               <h2 class="movie-title">${title}</h2>
-//               <p class="movie-info">${genres} |</p>
-//             </div>
-//         </li>`
-//     )
-//     .join('');
-//   movieList.innerHTML = markup;
-// }
