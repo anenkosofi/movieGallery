@@ -91,6 +91,7 @@
 }
 
 .navigation-list__item {
+  position: relative;
   a {
     display: block;
 
@@ -98,6 +99,19 @@
     line-height: calc(14 / 12);
     text-transform: uppercase;
   }
+}
+
+.active-link::after {
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+
+  content: ' ';
+  display: inline-block;
+  width: 100%;
+  height: 3px;
+
+  background-color: #ff001b;
 }
 
 .form {

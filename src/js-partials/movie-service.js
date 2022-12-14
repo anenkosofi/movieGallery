@@ -6,7 +6,7 @@ const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 const paginationContainer = document.querySelector('.pagination');
 const bodyRect = document.querySelector('body').getBoundingClientRect();
-const modalWindow = document.querySelector('.information');
+const modalWindow = document.querySelector('.modal');
 const backdrop = document.querySelector('.backdrop');
 const closeButton = document.querySelector('.close-button');
 
@@ -25,6 +25,8 @@ fetchMovies()
     paginationList.addEventListener('click', onButtonClick);
     const backwardButton = document.querySelector('.arrow-left');
     const forwardButton = document.querySelector('.arrow-right');
+    backwardButton.classList.remove('is-hidden');
+    forwardButton.classList.remove('is-hidden');
     backwardButton.addEventListener('click', onBackwardButtonClick);
     forwardButton.addEventListener('click', onForwardButtonClick);
   })
@@ -162,7 +164,7 @@ function checkImageSrc(src) {
 function renderMovieList(movies) {
   const markup = movies
     .map(
-      ({ id, poster_path, title, genre_ids, release_date, vote_average }) =>
+      ({ id, poster_path, title, genre_ids, release_date }) =>
         `<li class="movie-list__item" data-id="${id}">
             <img class="movie-image" ${checkImageSrc(
               poster_path
@@ -171,9 +173,7 @@ function renderMovieList(movies) {
               <h2 class="movie-title">${title || 'Unknown'}</h2>
               <p class="movie-info">${
                 genresIdConverter(genre_ids) || 'Other'
-              } | ${
-          getFullYear(release_date) || 'Unknown'
-        }<span class="vote-average">${roundAverageVote(vote_average)}</span></p>
+              } | ${getFullYear(release_date) || 'Unknown'}</p>
             </div>
         </li>`
     )
@@ -288,17 +288,81 @@ function onModalWindowOpen(e) {
     movieId = e.target.closest('li').dataset.id;
   }
 
-  clearMarkup(modalWindow);
+  const information = document.querySelector('.information');
+  if (information) {
+    information.remove();
+  }
+
   fetchMovieDetails(movieId)
-    .then(movie => renderMovieModal(movie))
+    .then(movie => {
+      renderMovieModal(movie);
+      const addToWatched = document.querySelector('[data-action="watched"]');
+      addToWatched.addEventListener('click', onAddToWatched);
+    })
     .catch(error => console.log(error));
 
   backdrop.classList.remove('is-hidden');
-
   document.addEventListener('keydown', onEscClose);
 }
 
+function onAddToWatched() {
+  const id = document.querySelector('.information').dataset.id;
+  const genres = document.querySelector('[data-name="genres"]').textContent;
+  const originalTitle = document.querySelector(
+    '[data-name="original-title"]'
+  ).textContent;
+  const overview = document.querySelector('[data-name="overview"]').textContent;
+  const popularity = document.querySelector(
+    '[data-name="popularity"]'
+  ).textContent;
+  const poster_path = document.querySelector('[data-name="poster-path"]').src;
+  const title = document.querySelector('[data-name="title"]').textContent;
+  const voteAverage = document.querySelector(
+    '[data-name="vote-average"]'
+  ).textContent;
+  const voteCount = document.querySelector(
+    '[data-name="vote-count"]'
+  ).textContent;
+
+  const LOCAL_STORAGE_KEY = 'addToWatched';
+  let savedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  if (!savedData) {
+    const movies = [];
+    const movie = {
+      id,
+      genres,
+      originalTitle,
+      overview,
+      popularity,
+      poster_path,
+      title,
+      voteAverage,
+      voteCount,
+    };
+    movies.push(movie);
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(movies));
+  } else {
+    const movies = [...savedData];
+    const movie = {
+      id,
+      genres,
+      originalTitle,
+      overview,
+      popularity,
+      poster_path,
+      title,
+      voteAverage,
+      voteCount,
+    };
+    movies.push(movie);
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(movies));
+  }
+}
+
 function renderMovieModal({
+  id,
   genres,
   original_title,
   overview,
@@ -308,50 +372,56 @@ function renderMovieModal({
   vote_average,
   vote_count,
 }) {
-  const markup = `<img ${checkImageSrc(poster_path)} alt="Movie poster"  />
+  const markup = `<div class="information" data-id="${id}"><img ${checkImageSrc(
+    poster_path
+  )} alt="Movie poster" data-name="poster-path" />
     <div class="movie-details">
-      <h3 class="movie-heading">${title}</h3>
+      <h3 class="movie-heading" data-name="title">${title}</h3>
       <ul class="movie-list-info">
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Vote / Votes</p>
           <p class="movie-mark">
-            <span class="rating">${roundAverageVote(
+            <span class="rating" data-name="vote-average">${roundAverageVote(
               vote_average
             )}</span><span class="delimeter">/</span
-            ><span class="quantity">${vote_count}</span>
+            ><span class="quantity" data-name="vote-count">${vote_count}</span>
           </p>
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Popularity</p>
-          <p class="movie-mark">${roundAverageVote(popularity)}</p>
+          <p class="movie-mark" data-name="popularity">${roundAverageVote(
+            popularity
+          )}</p>
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Original Title</p>
-          <p class="movie-mark movie-mark--original-title">${original_title}</p>
+          <p class="movie-mark movie-mark--original-title" data-name="original-title">${original_title}</p>
         </li>
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Genre</p>
-          <p class="movie-mark">${genres
+          <p class="movie-mark" data-name="genres">${genres
             .map(genre => genre.name)
             .join(', ')}</p>
         </li>
       </ul>
       <p class="about">About</p>
-      <p class="about-descr">${overview}</p>
+      <p class="about-descr" data-name="overview">${overview}</p>
       <div class="button-wrapper button-wrapper--modal">
-        <button class="button modal-button" type="button">
-          Add to watched
-        </button>
-        <button
-          class="button queue modal-button modal-button-queue"
-          type="button"
-        >
-          Add to queue
-        </button>
-      </div>
-    </div>`;
+      <button class="button modal-button" type="button" data-action="watched">
+        Add to watched
+      </button>
+      <button
+        class="button modal-button"
+        type="button"
+        data-action="queue"
+      >
+        Add to queue
+      </button>
+    </div>
+  </div>
+</div>`;
 
-  modalWindow.innerHTML = markup;
+  modalWindow.firstElementChild.insertAdjacentHTML('afterend', markup);
 }
 
 function onModalWindowClose() {
@@ -370,3 +440,50 @@ function onEscClose(e) {
     onModalWindowClose();
   }
 }
+
+const homePage = document.querySelector('[data-page="home"]');
+const libraryPage = document.querySelector('[data-page="library"]');
+
+homePage.addEventListener('click', onHomePageLoad);
+
+function onHomePageLoad() {
+  let pageNumber = 1;
+
+  fetchMovies()
+    .then(({ results }) => renderMovieList(results))
+    .catch(error => console.log(error));
+
+  makePagination(pageNumber);
+  makeButtonDisabled(pageNumber);
+  makeButtonActive(pageNumber);
+
+  paginationList.addEventListener('click', onButtonClick);
+  const backwardButton = document.querySelector('.arrow-left');
+  const forwardButton = document.querySelector('.arrow-right');
+  backwardButton.addEventListener('click', onBackwardButtonClick);
+  forwardButton.addEventListener('click', onForwardButtonClick);
+}
+
+// libraryPage.addEventListener('click', onLibraryPageLoad);
+
+// function onLibraryPageLoad() {
+//   clearMarkup(movieList);
+//   const moviesToWatched = JSON.parsed(localStorage.getItem('addToWatched'));
+//   renderMovieListInMyLibrary(moviesToWatched);
+// }
+
+// function renderMovieListInMyLibrary(movies) {
+//   const markup = movies
+//     .map(
+//       ({ id, posterPath, title, genres, release_date }) =>
+//         `<li class="movie-list__item" data-id="${id}">
+//             <img class="movie-image" src="${posterPath} alt="Movie poster" loading="lazy" />
+//             <div class="movie-descr">
+//               <h2 class="movie-title">${title}</h2>
+//               <p class="movie-info">${genres} |</p>
+//             </div>
+//         </li>`
+//     )
+//     .join('');
+//   movieList.innerHTML = markup;
+// }

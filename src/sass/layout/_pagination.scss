@@ -52,6 +52,12 @@
 .arrow-left,
 .arrow-right {
   background-color: #f7f7f7;
+
+  &.is-hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 .active {
