@@ -26,7 +26,6 @@
 
 .movie-list__item {
   width: 280px;
-  margin: 0 auto;
 
   overflow: hidden;
   cursor: pointer;
@@ -35,6 +34,7 @@
 
   @media screen and (max-width: 767px) {
     &:not(:last-child) {
+      margin: 0 auto;
       margin-bottom: 20px;
     }
   }
