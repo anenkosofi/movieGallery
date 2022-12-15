@@ -18,6 +18,7 @@ export function renderMovieModal({
   vote_average,
   vote_count,
 }) {
+  console.log(genres);
   const addToWatched = 'add to watched';
   const addToQueue = 'add to queue';
   const removeFromWatched = 'remove from watched';
@@ -96,7 +97,7 @@ function checkGenres(genresArray) {
     return (genres =
       genresArray
         .slice(0, 2)
-        .map(genre => genre.name)
+        .map(genre => genre['name'])
         .join(', ') + ', Other');
   } else if (genresArray.length > 0 && genresArray.length <= 2) {
     return (genres = genresArray.map(genre => genre.name).join(', '));
