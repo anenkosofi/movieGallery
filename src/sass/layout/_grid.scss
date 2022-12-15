@@ -26,6 +26,7 @@
 
 .movie-list__item {
   width: 280px;
+  margin: 0 auto;
 
   overflow: hidden;
   cursor: pointer;
@@ -53,25 +54,32 @@
   }
 }
 
-// .movie-image {
-//   width: 280px;
+.movie-image {
+  width: 280px;
 
-//   @media screen and (min-width: 768px) {
-//     width: 336px;
-//   }
-//   @media screen and (min-width: 1280px) {
-//     width: 395px;
-//   }
-// }
+  @media screen and (min-width: 768px) {
+    width: 336px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 395px;
+  }
+}
+
 .movie-descr {
   padding: 12px 5px;
 }
 
 .movie-title {
-  font-size: 20px;
-  line-height: calc(24 / 20);
+  font-size: 12px;
+  line-height: calc(16 / 12);
+  text-transform: uppercase;
 
   color: #000000;
+
+  @media screen and (min-width: 1280px) {
+    font-size: 20px;
+    line-height: calc(24 / 20);
+  }
 }
 
 .movie-info {
@@ -79,10 +87,15 @@
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 5px;
-  font-size: 20px;
-  line-height: calc(24 / 20);
+  font-size: 12px;
+  line-height: calc(16 / 12);
 
   color: #ff6b08;
+
+  @media screen and (min-width: 1280px) {
+    font-size: 20px;
+    line-height: calc(24 / 20);
+  }
 }
 
 .vote-average {
