@@ -23,7 +23,7 @@ function onDisplayMovie(e) {
     document
       .querySelector('[data-name="watched"]')
       .classList.remove('is-active');
-    const localStorageKey = 'add-to-queue';
+    const localStorageKey = 'queue';
     clearMarkup(movieList);
     const moviesToWatched = JSON.parse(localStorage.getItem(localStorageKey));
     if (moviesToWatched) {

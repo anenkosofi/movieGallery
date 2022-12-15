@@ -11,3 +11,4 @@ import './js-partials/home/renderMovieModal';
 import './js-partials/home/onAddMovie';
 import './js-partials/home/addToLocalStorage';
 import './js-partials/home/deleteFromLocalStorage';
+import './js-partials/home/onMovieSearch';
