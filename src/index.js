@@ -1,3 +1,13 @@
-import './js-partials/modal';
-import './js-partials/movie-service';
-import './js-partials/pagination';
+import './js-partials/home/keyAndUrl';
+import './js-partials/home/movie-service';
+import './js-partials/home/onHomePageLoad';
+import './js-partials/home/genres';
+import './js-partials/home/functionsForRenderingMovies';
+import './js-partials/home/renderMovieList';
+import './js-partials/home/pagination';
+import './js-partials/home/modal';
+import './js-partials/home/fetchMovieDetails';
+import './js-partials/home/renderMovieModal';
+import './js-partials/home/onAddMovie';
+import './js-partials/home/addToLocalStorage';
+import './js-partials/home/deleteFromLocalStorage';

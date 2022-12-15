@@ -1,0 +1,9 @@
+import './js-partials/library/onLibraryPageLoad';
+import './js-partials/library/renderMovieListInMyLibrary';
+import './js-partials/library/onButtonClick';
+import './js-partials/home/modal';
+import './js-partials/home/fetchMovieDetails';
+import './js-partials/home/renderMovieModal';
+import './js-partials/home/onAddMovie';
+import './js-partials/home/addToLocalStorage';
+import './js-partials/home/deleteFromLocalStorage';
