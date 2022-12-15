@@ -100,7 +100,7 @@ function checkGenres(genresArray) {
         .map(genre => genre['name'])
         .join(', ') + ', Other');
   } else if (genresArray.length > 0 && genresArray.length <= 2) {
-    return (genres = genresArray.map(genre => genre.name).join(', '));
+    return (genres = genresArray.map(genre => genre['name']).join(', '));
   } else {
     return (genres = ' ');
   }
