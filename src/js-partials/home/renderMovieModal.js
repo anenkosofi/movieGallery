@@ -94,14 +94,14 @@ export function renderMovieModal({
 
 function checkGenres(genresArray) {
   if (genresArray.length > 2) {
-    return (genres =
+    return (genresArray =
       genresArray
         .slice(0, 2)
-        .map(genre => genre['name'])
+        .map(genre => genre.name)
         .join(', ') + ', Other');
   } else if (genresArray.length > 0 && genresArray.length <= 2) {
-    return (genres = genresArray.map(genre => genre['name']).join(', '));
+    return (genresArray = genresArray.map(genre => genre.name).join(', '));
   } else {
-    return (genres = ' ');
+    return (genresArray = ' ');
   }
 }
