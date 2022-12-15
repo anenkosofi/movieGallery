@@ -18,7 +18,6 @@ export function renderMovieModal({
   vote_average,
   vote_count,
 }) {
-  console.log(genres);
   const addToWatched = 'add to watched';
   const addToQueue = 'add to queue';
   const removeFromWatched = 'remove from watched';

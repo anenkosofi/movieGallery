@@ -18,7 +18,9 @@ export function renderMovieList(movies) {
               <h2 class="movie-title">${title || 'Unknown'}</h2>
               <p class="movie-info"><span class="genre">${
                 genresIdConverter(genre_ids) || 'No information'
-              }</span><span>| ${getFullYear(release_date) || ' '}</span></p>
+              } |</span><span>${
+          getFullYear(release_date) || 'No information'
+        }</span></p>
             </div>
         </li>`
     )

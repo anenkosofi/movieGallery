@@ -13,7 +13,7 @@ function genresIdConverter(genreIds) {
       .map(genreId => (genreId = genres[genreId]))
       .join(', '));
   } else {
-    return (genreIds = ' ');
+    return (genreIds = 'No Information');
   }
 }
 

@@ -8,8 +8,8 @@ export function renderMovieListInMyLibrary(movies) {
             <img class="movie-image" src="${posterPath}" alt="Movie poster" loading="lazy" />
             <div class="movie-descr">
               <h2 class="movie-title">${title}</h2>
-              <p class="movie-info"><span class="genre">${genres}</span>
-              <span>| ${year}</span><span class="vote-average">${voteAverage}</span></p>
+              <p class="movie-info"><span class="genre">${genres} |</span>
+              <span>${year}</span><span class="vote-average">${voteAverage}</span></p>
             </div>
         </li>`
     )

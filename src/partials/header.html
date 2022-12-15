@@ -24,14 +24,18 @@
       <input
         class="form-input"
         type="text"
-        name="query"
+        name="searchQuery"
         placeholder="Movie search"
       />
+      <ul class="results-list is-hidden"></ul>
       <button class="search-button" type="submit">
         <svg width="12" height="12">
           <use href="./images/symbol-defs.svg#icon-search"></use>
         </svg>
       </button>
     </form>
+    <p class="error-message">
+      Search result not successful. Enter the correct movie name
+    </p>
   </div>
 </header>
