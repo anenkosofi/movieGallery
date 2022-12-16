@@ -6,7 +6,7 @@ import {
 
 const modalWindow = document.querySelector('.modal');
 
-export function renderMovieModal({
+function renderMovieModal({
   id,
   genres,
   original_title,
@@ -104,3 +104,5 @@ function checkGenres(genresArray) {
     return (genresArray = ' ');
   }
 }
+
+export { renderMovieModal, checkGenres };

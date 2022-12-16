@@ -1,13 +1,23 @@
 import { API_KEY, BASE_URL } from './keyAndUrl';
 import { renderMovieList } from './renderMovieList';
 import { clearMarkup } from './clearMarkup';
+import { checkImageSrc, getFullYear } from './functionsForRenderingMovies';
+import { fetchMovieDetails } from './fetchMovieDetails';
+import { checkGenres } from './renderMovieModal';
 
+const movieList = document.querySelector('.movie-list');
 const paginationList = document.querySelector('.pagination-list');
 const resultList = document.querySelector('.results-list');
 const error = document.querySelector('.error-message');
 
 const form = document.querySelector('.form');
 form.addEventListener('submit', onMovieSearch);
+
+const input = document.querySelector('.form-input');
+input.addEventListener('input', onInputChange);
+input.addEventListener('blur', onBlurChange);
+
+resultList.addEventListener('click', onResultClick);
 
 async function fetchMoviesInSearchLine(query) {
   const response = await fetch(
@@ -28,6 +38,7 @@ function onMovieSearch(e) {
   fetchMoviesInSearchLine(searchQuery)
     .then(({ results }) => {
       resultList.classList.add('is-hidden');
+      form.classList.remove('input-change');
       renderMovieList(results);
     })
     .catch(error => console.log(error));
@@ -39,10 +50,6 @@ function onMovieSearch(e) {
   clearMarkup(paginationList);
   form.reset();
 }
-
-const input = document.querySelector('.form-input');
-
-input.addEventListener('input', onInputChange);
 
 function onInputChange(e) {
   const searchQuery = e.target.value.trim().toLowerCase();
@@ -74,12 +81,60 @@ function onInputChange(e) {
   clearMarkup(paginationList);
 }
 
+function onBlurChange() {
+  form.classList.remove('input-change');
+  resultList.classList.add('is-hidden');
+}
+
 function renderSearchQueryList(results) {
   const markup = results
     .map(
       ({ id, title }) =>
-        `<li class="results-item" data-id="${id}">${title}</li>`
+        `<li class="results-item" data-id="${id}">
+          <span class="title">${title}</span>
+          <span class="delimeter">|</span>
+          <span class="year">2022</span>
+          <span class="vote">7.8</span>
+        </li>`
     )
     .join('');
   resultList.innerHTML = markup;
+}
+
+function onResultClick(e) {
+  if (!e.target.closest('li')) {
+    return;
+  } else if (e.target.closest('li')) {
+    const movieId = e.target.closest('li').dataset.id;
+
+    fetchMovieDetails(movieId)
+      .then(movie => fetchMovieFromResults(movie))
+      .catch(error => console.log(error));
+    form.classList.remove('input-change');
+    resultList.classList.add('is-hidden');
+    form.reset();
+  }
+}
+
+function fetchMovieFromResults({
+  id,
+  poster_path,
+  title,
+  genres,
+  release_date,
+}) {
+  const markup = `<li class="movie-list__item" data-id="${id}">
+            <img class="movie-image" ${checkImageSrc(
+              poster_path
+            )} alt="Movie poster" loading="lazy" />
+            <div class="movie-descr">
+              <h2 class="movie-title">${title || 'Unknown'}</h2>
+              <p class="movie-info"><span class="genre">${
+                checkGenres(genres) || 'No information'
+              } |</span><span>${
+    getFullYear(release_date) || 'No information'
+  }</span></p>
+            </div>
+        </li>`;
+  movieList.innerHTML = markup;
 }

@@ -6,13 +6,13 @@ const headerButtons = document.querySelector('[data-name="header-wrapper"]');
 
 headerButtons.addEventListener('click', onDisplayMovie);
 
-function onDisplayMovie(e) {
+export function onDisplayMovie(e) {
   const watchedButton = 'watched';
   const queueButton = 'queue';
   if (e.target.closest('button').dataset.name === watchedButton) {
     document.querySelector('[data-name="watched"]').classList.add('is-active');
     document.querySelector('[data-name="queue"]').classList.remove('is-active');
-    const localStorageKey = 'add-to-watched';
+    const localStorageKey = 'watched';
     clearMarkup(movieList);
     const moviesToWatched = JSON.parse(localStorage.getItem(localStorageKey));
     if (moviesToWatched) {

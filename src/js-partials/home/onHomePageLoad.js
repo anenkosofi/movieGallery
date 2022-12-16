@@ -14,6 +14,8 @@ const paginationList = document.querySelector('.pagination-list');
 onHomePageLoad();
 
 function onHomePageLoad() {
+  document.body.style.overflow = 'hidden';
+
   let pageNumber = 1;
 
   fetchMovies()
@@ -31,4 +33,7 @@ function onHomePageLoad() {
   forwardButton.classList.remove('is-hidden');
   backwardButton.addEventListener('click', onBackwardButtonClick);
   forwardButton.addEventListener('click', onForwardButtonClick);
+
+  document.querySelector('.loader-wrapper').classList.add('turn-off');
+  document.body.style.overflow = 'visible';
 }
