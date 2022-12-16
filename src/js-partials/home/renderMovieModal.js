@@ -41,9 +41,15 @@ function renderMovieModal({
   }
   const markup = `<div class="information" data-id="${id}" data-year="${getFullYear(
     release_date
-  )}"><img ${checkImageSrc(
+  )}"><div class="trailer"><img ${checkImageSrc(
     poster_path
   )} alt="Movie poster" data-name="poster-path" />
+    <div class="overlay">
+    <div class="circle"><svg width="60" height="60" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 0c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16zM16 29c-7.18 0-13-5.82-13-13s5.82-13 13-13 13 5.82 13 13-5.82 13-13 13zM12 9l12 7-12 7z"></path>
+        </svg></div>
+    </div>
+  </div>
     <div class="movie-details">
       <h3 class="movie-heading" data-name="title">${title}</h3>
       <ul class="movie-list-info">
