@@ -149,6 +149,10 @@
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
   background-color: rgba(0, 0, 0, 0.56);
+
+  @media screen and (min-width: 768px) and (max-width: 1279px) {
+    height: 374px;
+  }
 }
 
 .circle {
