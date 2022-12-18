@@ -12,3 +12,4 @@ import './js-partials/home/onAddMovie';
 import './js-partials/home/addToLocalStorage';
 import './js-partials/home/deleteFromLocalStorage';
 import './js-partials/home/onMovieSearch';
+import './js-partials/home/fetchTrailer';

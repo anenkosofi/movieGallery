@@ -15,7 +15,6 @@ form.addEventListener('submit', onMovieSearch);
 
 const input = document.querySelector('.form-input');
 input.addEventListener('input', onInputChange);
-input.addEventListener('blur', onBlurChange);
 
 resultList.addEventListener('click', onResultClick);
 
@@ -79,11 +78,6 @@ function onInputChange(e) {
   backwardButton.classList.add('is-hidden');
   forwardButton.classList.add('is-hidden');
   clearMarkup(paginationList);
-}
-
-function onBlurChange() {
-  form.classList.remove('input-change');
-  resultList.classList.add('is-hidden');
 }
 
 function renderSearchQueryList(results) {

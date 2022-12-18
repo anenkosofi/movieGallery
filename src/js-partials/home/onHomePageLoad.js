@@ -34,6 +34,10 @@ function onHomePageLoad() {
   backwardButton.addEventListener('click', onBackwardButtonClick);
   forwardButton.addEventListener('click', onForwardButtonClick);
 
-  document.querySelector('.loader-wrapper').classList.add('turn-off');
+  window.onload = e => {
+    setTimeout(() => {
+      document.querySelector('.loader-wrapper').classList.add('turn-off');
+    }, 100);
+  };
   document.body.style.overflow = 'visible';
 }
