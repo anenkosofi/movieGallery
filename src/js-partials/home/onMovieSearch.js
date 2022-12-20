@@ -18,9 +18,9 @@ input.addEventListener('input', onInputChange);
 
 resultList.addEventListener('click', onResultClick);
 
-async function fetchMoviesInSearchLine(query) {
+async function fetchMoviesInSearchLine(query, page = 1) {
   const response = await fetch(
-    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`
   );
   if (!response.ok) {
     throw new Error(response.status);

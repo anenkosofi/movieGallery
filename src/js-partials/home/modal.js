@@ -1,6 +1,7 @@
 import { fetchMovieDetails } from './fetchMovieDetails';
 import { renderMovieModal } from './renderMovieModal';
 import { onAddMovie } from './onAddMovie';
+import { onPlayButtonClick } from './fetchTrailer';
 
 const movieList = document.querySelector('.movie-list');
 const backdrop = document.querySelector('.backdrop');
@@ -27,6 +28,8 @@ function onModalWindowOpen(e) {
           '[data-name="modal-wrapper"]'
         );
         modalButtons.addEventListener('click', onAddMovie);
+        const playButton = document.querySelector('.circle');
+        playButton.addEventListener('click', onPlayButtonClick);
       })
       .catch(error => console.log(error));
 

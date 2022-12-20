@@ -14,17 +14,19 @@
   @media screen and (min-width: 768px) {
     display: flex;
     flex-wrap: wrap;
-    gap: 32px;
+    column-gap: 32px;
+    row-gap: 32px;
 
     margin-bottom: 60px;
   }
   @media screen and (min-width: 1280px) {
     column-gap: 16px;
-    row-gap: 32px;
   }
 }
 
 .movie-list__item {
+  display: flex;
+  flex-direction: column;
   width: 280px;
 
   overflow: hidden;
@@ -40,10 +42,10 @@
   }
 
   @media screen and (min-width: 768px) {
-    width: 336px;
+    flex-basis: calc((100% - 32px) / 2);
   }
   @media screen and (min-width: 1280px) {
-    width: 395px;
+    flex-basis: calc((100% - 32px) / 3);
   }
 
   &:hover,
@@ -55,21 +57,11 @@
 }
 
 .movie-image {
-  width: 280px;
-  height: 398px;
   object-fit: cover;
-
-  @media screen and (min-width: 768px) {
-    width: 336px;
-    height: 455px;
-  }
-  @media screen and (min-width: 1280px) {
-    width: 395px;
-    height: 574px;
-  }
 }
 
 .movie-descr {
+  flex-grow: 1;
   padding: 12px 5px;
 
   border: 1px solid #eeeeee;

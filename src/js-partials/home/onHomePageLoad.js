@@ -37,7 +37,7 @@ function onHomePageLoad() {
   window.onload = e => {
     setTimeout(() => {
       document.querySelector('.loader-wrapper').classList.add('turn-off');
-    }, 100);
+    }, 250);
   };
   document.body.style.overflow = 'visible';
 }

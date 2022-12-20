@@ -1,10 +1,13 @@
 import { API_KEY, BASE_URL } from './keyAndUrl';
+import { onEscClose } from './modal';
 
-// /movie/{movie_id}/videos
+const trailerBackdrop = document.querySelector('.trailer-wrapper');
+const trailerContainer = document.querySelector('.iframe-container');
+trailerBackdrop.addEventListener('click', onTrailerBackdropClick);
 
-export async function fetchTrailer() {
+async function fetchTrailer(id) {
   const response = await fetch(
-    `${BASE_URL}/movie/555604/videos?api_key=${API_KEY}`
+    `${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`
   );
   if (!response.ok) {
     throw new Error(response.status);
@@ -12,12 +15,49 @@ export async function fetchTrailer() {
   return await response.json();
 }
 
-fetchTrailer()
-  .then(({ results }) => {
-    const trailer = results.find(result => result.type === 'Trailer');
-    const movieKey = trailer.key;
-    console.log(movieKey);
-  })
-  .catch(error => console.log(error));
+function onPlayButtonClick() {
+  const id = document.querySelector('.information').dataset.id;
 
-// https://www.youtube.com/watch?v=
+  fetchTrailer(id)
+    .then(({ results }) => {
+      const trailer = results.find(result => result.type === 'Trailer');
+      const movieKey = trailer.key;
+      const trailerSrc = `https://www.youtube.com/embed/${movieKey}`;
+      renderTrailer(trailerSrc);
+    })
+    .catch(error => console.log(error));
+  trailerBackdrop.classList.remove('is-hidden');
+  document.addEventListener('keydown', onTrailerEscClose);
+  document.removeEventListener('keydown', onEscClose);
+}
+
+function renderTrailer(src) {
+  const markup = `<iframe
+        width="1280"
+        height="700"
+        src="${src}"
+        title="YouTube Video Player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>`;
+
+  trailerContainer.innerHTML = markup;
+}
+
+function onTrailerBackdropClick(e) {
+  if (e.currentTarget === e.target) {
+    trailerBackdrop.classList.add('is-hidden');
+    document.addEventListener('keydown', onEscClose);
+  }
+}
+
+function onTrailerEscClose(e) {
+  if (e.code === 'Escape') {
+    document.removeEventListener('keydown', onTrailerEscClose);
+    document.addEventListener('keydown', onEscClose);
+    trailerBackdrop.classList.add('is-hidden');
+  }
+}
+
+export { fetchTrailer, onPlayButtonClick, renderTrailer };

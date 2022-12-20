@@ -128,15 +128,22 @@
 
 .trailer {
   position: relative;
+  @media screen and (max-width: 767px) {
+    .overlay {
+      opacity: 1;
+    }
+  }
 
   @media screen and (min-width: 768px) and (max-width: 1279px) {
     height: 374px;
   }
 
-  &:hover,
-  &:focus {
-    .overlay {
-      opacity: 1;
+  @media screen and (min-width: 1280px) {
+    &:hover,
+    &:focus {
+      .overlay {
+        opacity: 1;
+      }
     }
   }
 }
