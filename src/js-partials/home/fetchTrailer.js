@@ -14,28 +14,18 @@ async function fetchTrailer(id) {
   }
   return await response.json();
 }
-let player;
 function onPlayButtonClick() {
   const id = document.querySelector('.information').dataset.id;
 
   fetchTrailer(id)
     .then(({ results }) => {
-      const trailer = results.find(result => result.type === 'Trailer');
-      const movieKey = trailer.key;
-      const trailerSrc = `https://www.youtube.com/embed/${movieKey}`;
-      renderTrailer(trailerSrc);
-
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('#player', {
-          events: {
-            onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange,
-          },
-        });
-        function onPlayerReady(event) {
-          event.target.playVideo();
-          player.playVideo();
-        }
+      if (results.length) {
+        const trailer = results.find(result => result.type === 'Trailer');
+        const movieKey = trailer.key;
+        const trailerSrc = `https://www.youtube.com/embed/${movieKey}`;
+        renderTrailer(trailerSrc);
+      } else {
+        renderTrailerDefault();
       }
     })
     .catch(error => console.log(error));
@@ -46,7 +36,6 @@ function onPlayButtonClick() {
 
 function renderTrailer(src) {
   const markup = `<iframe
-        id="player"
         width="1280"
         height="700"
         src="${src}"
@@ -56,6 +45,14 @@ function renderTrailer(src) {
         allowfullscreen
       ></iframe>`;
 
+  trailerContainer.innerHTML = markup;
+}
+
+function renderTrailerDefault() {
+  const markup = `<img
+        src="https://media.tenor.com/zZ40mt2KOFoAAAAC/crying-mei-lee.gif"
+        alt="Panda crying"
+      />`;
   trailerContainer.innerHTML = markup;
 }
 
