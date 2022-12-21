@@ -4,8 +4,17 @@ import { clearMarkup } from './clearMarkup';
 import { checkImageSrc, getFullYear } from './functionsForRenderingMovies';
 import { fetchMovieDetails } from './fetchMovieDetails';
 import { checkGenres } from './renderMovieModal';
+import {
+  onBackwardButtonClick,
+  onForwardButtonClick,
+  makeButtonDisabled,
+  makePagination,
+  makeButtonActive,
+  onButtonClick,
+} from './pagination';
 
 const movieList = document.querySelector('.movie-list');
+
 const paginationList = document.querySelector('.pagination-list');
 const resultList = document.querySelector('.results-list');
 const error = document.querySelector('.error-message');
@@ -34,19 +43,43 @@ function onMovieSearch(e) {
   const searchQuery = e.currentTarget.elements.searchQuery.value
     .trim()
     .toLowerCase();
+  let pageNumber = 1;
   fetchMoviesInSearchLine(searchQuery)
-    .then(({ results }) => {
+    .then(({ results, total_pages }) => {
       resultList.classList.add('is-hidden');
       form.classList.remove('input-change');
       renderMovieList(results);
+      makePagination(pageNumber, total_pages);
+      makeButtonDisabled(pageNumber);
+      makeButtonActive(pageNumber);
     })
     .catch(error => console.log(error));
 
+  paginationList.addEventListener('click', e => {
+    if (e.target.nodeName !== 'BUTTON') {
+      return;
+    }
+    if (e.target.textContent) {
+      const pageNumber = Number(e.target.textContent);
+      clearMarkup(movieList);
+      fetchMoviesInSearchLine(searchQuery, pageNumber)
+        .then(({ results, total_pages }) => {
+          renderMovieList(results);
+          clearMarkup(paginationList);
+          makePagination(pageNumber, total_pages);
+          makeButtonDisabled(pageNumber, total_pages);
+          makeButtonActive(pageNumber);
+        })
+        .catch(error => console.log(error));
+    }
+  });
+
   const backwardButton = document.querySelector('.arrow-left');
   const forwardButton = document.querySelector('.arrow-right');
-  backwardButton.classList.add('is-hidden');
-  forwardButton.classList.add('is-hidden');
-  clearMarkup(paginationList);
+  backwardButton.classList.remove('is-hidden');
+  forwardButton.classList.remove('is-hidden');
+  backwardButton.addEventListener('click', onBackwardButtonClick);
+  forwardButton.addEventListener('click', onForwardButtonClick);
   form.reset();
 }
 

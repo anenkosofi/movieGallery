@@ -18,9 +18,13 @@ function genresIdConverter(genreIds) {
 }
 
 function getFullYear(date) {
-  const year = new Date(date).getFullYear();
-
-  return year;
+  if (date) {
+    const year = new Date(date).getFullYear();
+    return year;
+  } else {
+    const year = 'No information';
+    return year;
+  }
 }
 
 function roundAverageVote(vote) {
@@ -35,4 +39,46 @@ function checkImageSrc(src) {
   return `src="${defaultImage}"`;
 }
 
-export { genresIdConverter, getFullYear, roundAverageVote, checkImageSrc };
+function checkGenres(genresArray) {
+  if (genresArray.length > 2) {
+    return (genresArray =
+      genresArray
+        .slice(0, 2)
+        .map(genre => genre.name)
+        .join(', ') + ', Other');
+  } else if (genresArray.length > 0 && genresArray.length <= 2) {
+    return (genresArray = genresArray.map(genre => genre.name).join(', '));
+  } else {
+    return (genresArray = 'No information');
+  }
+}
+
+function checkDescription(overview) {
+  if (overview) {
+    const description = overview;
+    return description;
+  } else {
+    const description = 'No description';
+    return description;
+  }
+}
+
+function checkTitle(title) {
+  if (title) {
+    const titleName = title;
+    return titleName;
+  } else {
+    const titleName = 'No titleName';
+    return titleName;
+  }
+}
+
+export {
+  genresIdConverter,
+  getFullYear,
+  roundAverageVote,
+  checkImageSrc,
+  checkGenres,
+  checkDescription,
+  checkTitle,
+};

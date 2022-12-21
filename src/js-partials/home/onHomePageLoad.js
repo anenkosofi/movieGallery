@@ -19,12 +19,13 @@ function onHomePageLoad() {
   let pageNumber = 1;
 
   fetchMovies()
-    .then(({ results }) => renderMovieList(results))
+    .then(({ results, total_pages }) => {
+      renderMovieList(results);
+      makePagination(pageNumber, total_pages);
+      makeButtonDisabled(pageNumber, total_pages);
+      makeButtonActive(pageNumber);
+    })
     .catch(error => console.log(error));
-
-  makePagination(pageNumber);
-  makeButtonDisabled(pageNumber);
-  makeButtonActive(pageNumber);
 
   paginationList.addEventListener('click', onButtonClick);
   const backwardButton = document.querySelector('.arrow-left');

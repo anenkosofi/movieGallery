@@ -128,11 +128,6 @@
 
 .trailer {
   position: relative;
-  @media screen and (max-width: 767px) {
-    .overlay {
-      opacity: 1;
-    }
-  }
 
   @media screen and (min-width: 768px) and (max-width: 1279px) {
     height: 374px;
@@ -156,13 +151,17 @@
   width: 100%;
   height: 100%;
 
-  opacity: 0;
+  opacity: 1;
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
   background-color: rgba(0, 0, 0, 0.56);
 
   @media screen and (min-width: 768px) and (max-width: 1279px) {
     height: 374px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    opacity: 0;
   }
 }
 
@@ -317,8 +316,9 @@
 }
 
 .modal-button {
-  padding: 14px 9px 12px;
+  padding: 0;
   width: 110px;
+  height: 44px;
 
   color: #000000;
   border-color: #000000;

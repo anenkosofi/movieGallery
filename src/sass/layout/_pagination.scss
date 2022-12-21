@@ -5,6 +5,10 @@
   align-items: center;
 }
 
+.pagination.is-hidden {
+  display: none;
+}
+
 .pagination-item {
   font-size: 12px;
   line-height: calc(16 / 12);

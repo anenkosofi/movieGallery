@@ -2,6 +2,9 @@ import {
   checkImageSrc,
   roundAverageVote,
   getFullYear,
+  checkGenres,
+  checkDescription,
+  checkTitle,
 } from './functionsForRenderingMovies';
 
 const modalWindow = document.querySelector('.modal');
@@ -51,7 +54,7 @@ function renderMovieModal({
     </div>
   </div>
     <div class="movie-details">
-      <h3 class="movie-heading" data-name="title">${title}</h3>
+      <h3 class="movie-heading" data-name="title">${checkTitle(title)}</h3>
       <ul class="movie-list-info">
         <li class="movie-list-info__item">
           <p class="movie-testimonial">Vote / Votes</p>
@@ -78,7 +81,9 @@ function renderMovieModal({
         </li>
       </ul>
       <p class="about">About</p>
-      <p class="about-descr" data-name="overview">${overview}</p>
+      <p class="about-descr" data-name="overview">${checkDescription(
+        overview
+      )}</p>
       <div class="modal-wrapper" data-name="modal-wrapper">
       <button class="button modal-button" type="button" data-action="watched">
         ${textContentForWatchedButton}
@@ -95,20 +100,6 @@ function renderMovieModal({
 </div>`;
 
   modalWindow.firstElementChild.insertAdjacentHTML('afterend', markup);
-}
-
-function checkGenres(genresArray) {
-  if (genresArray.length > 2) {
-    return (genresArray =
-      genresArray
-        .slice(0, 2)
-        .map(genre => genre.name)
-        .join(', ') + ', Other');
-  } else if (genresArray.length > 0 && genresArray.length <= 2) {
-    return (genresArray = genresArray.map(genre => genre.name).join(', '));
-  } else {
-    return (genresArray = ' ');
-  }
 }
 
 export { renderMovieModal, checkGenres };
