@@ -14,14 +14,14 @@ function onBackwardButtonClick() {
       const currentPageNumber = Number(button.textContent);
       const pageNumberToClick = currentPageNumber - 1;
       fetchMovies(pageNumberToClick)
-        .then(({ results }) => {
+        .then(({ results, total_pages }) => {
           renderMovieList(results);
+          clearMarkup(paginationList);
+          makePagination(pageNumberToClick, total_pages);
+          makeButtonDisabled(pageNumberToClick, total_pages);
+          makeButtonActive(pageNumberToClick);
         })
         .catch(error => console.log(error));
-      clearMarkup(paginationList);
-      makePagination(pageNumberToClick);
-      makeButtonDisabled(pageNumberToClick);
-      makeButtonActive(pageNumberToClick);
     }
   });
 }
@@ -33,14 +33,14 @@ function onForwardButtonClick() {
       const currentPageNumber = Number(button.textContent);
       const pageNumberToClick = currentPageNumber + 1;
       fetchMovies(pageNumberToClick)
-        .then(({ results }) => {
+        .then(({ results, total_pages }) => {
           renderMovieList(results);
+          clearMarkup(paginationList);
+          makePagination(pageNumberToClick, total_pages);
+          makeButtonDisabled(pageNumberToClick, total_pages);
+          makeButtonActive(pageNumberToClick);
         })
         .catch(error => console.log(error));
-      clearMarkup(paginationList);
-      makePagination(pageNumberToClick);
-      makeButtonDisabled(pageNumberToClick);
-      makeButtonActive(pageNumberToClick);
     }
   });
 }

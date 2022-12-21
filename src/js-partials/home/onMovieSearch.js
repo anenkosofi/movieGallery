@@ -78,8 +78,44 @@ function onMovieSearch(e) {
   const forwardButton = document.querySelector('.arrow-right');
   backwardButton.classList.remove('is-hidden');
   forwardButton.classList.remove('is-hidden');
-  backwardButton.addEventListener('click', onBackwardButtonClick);
-  forwardButton.addEventListener('click', onForwardButtonClick);
+  backwardButton.removeEventListener('click', onBackwardButtonClick);
+  backwardButton.addEventListener('click', () => {
+    const buttons = document.querySelectorAll('.pagination-button');
+    [...buttons].find(button => {
+      if (button.classList.contains('active')) {
+        const currentPageNumber = Number(button.textContent);
+        const pageNumberToClick = currentPageNumber - 1;
+        fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
+          .then(({ results, total_pages }) => {
+            renderMovieList(results);
+            clearMarkup(paginationList);
+            makePagination(pageNumberToClick, total_pages);
+            makeButtonDisabled(pageNumberToClick, total_pages);
+            makeButtonActive(pageNumberToClick);
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  });
+  forwardButton.removeEventListener('click', onForwardButtonClick);
+  forwardButton.addEventListener('click', () => {
+    const buttons = document.querySelectorAll('.pagination-button');
+    [...buttons].find(button => {
+      if (button.classList.contains('active')) {
+        const currentPageNumber = Number(button.textContent);
+        const pageNumberToClick = currentPageNumber + 1;
+        fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
+          .then(({ results, total_pages }) => {
+            renderMovieList(results);
+            clearMarkup(paginationList);
+            makePagination(pageNumberToClick, total_pages);
+            makeButtonDisabled(pageNumberToClick, total_pages);
+            makeButtonActive(pageNumberToClick);
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  });
   form.reset();
 }
 
@@ -105,12 +141,6 @@ function onInputChange(e) {
       })
       .catch(error => console.log(error));
   }
-
-  const backwardButton = document.querySelector('.arrow-left');
-  const forwardButton = document.querySelector('.arrow-right');
-  backwardButton.classList.add('is-hidden');
-  forwardButton.classList.add('is-hidden');
-  clearMarkup(paginationList);
 }
 
 function renderSearchQueryList(results) {
@@ -140,6 +170,18 @@ function onResultClick(e) {
     form.classList.remove('input-change');
     resultList.classList.add('is-hidden');
     form.reset();
+
+    clearMarkup(paginationList);
+    makePagination(1, 1);
+    makeButtonDisabled(1, 1);
+    makeButtonActive(1);
+
+    const backwardButton = document.querySelector('.arrow-left');
+    const forwardButton = document.querySelector('.arrow-right');
+    backwardButton.classList.remove('is-hidden');
+    forwardButton.classList.remove('is-hidden');
+    backwardButton.disabled = true;
+    forwardButton.disabled = true;
   }
 }
 

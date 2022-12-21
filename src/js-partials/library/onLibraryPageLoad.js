@@ -8,6 +8,7 @@ const pagination = document.querySelector('.pagination');
 onLibraryPageLoad();
 
 function onLibraryPageLoad() {
+  movieList.classList.add('library');
   clearMarkup(movieList);
   pagination.classList.add('is-hidden');
   document.querySelector('[data-name="watched"]').classList.add('is-active');

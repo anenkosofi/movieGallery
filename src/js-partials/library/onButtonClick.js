@@ -9,6 +9,7 @@ const pagination = document.querySelector('.pagination');
 headerButtons.addEventListener('click', onDisplayMovie);
 
 export function onDisplayMovie(e) {
+  movieList.classList.add('library');
   const watchedButton = 'watched';
   const queueButton = 'queue';
   if (e.target.closest('button').dataset.name === watchedButton) {
