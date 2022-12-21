@@ -43,56 +43,34 @@ function onMovieSearch(e) {
   const searchQuery = e.currentTarget.elements.searchQuery.value
     .trim()
     .toLowerCase();
-  let pageNumber = 1;
-  fetchMoviesInSearchLine(searchQuery)
-    .then(({ results, total_pages }) => {
-      resultList.classList.add('is-hidden');
-      form.classList.remove('input-change');
-      renderMovieList(results);
-      makePagination(pageNumber, total_pages);
-      makeButtonDisabled(pageNumber);
-      makeButtonActive(pageNumber);
-    })
-    .catch(error => console.log(error));
-
-  paginationList.addEventListener('click', e => {
-    if (e.target.nodeName !== 'BUTTON') {
-      return;
-    }
-    if (e.target.textContent) {
-      const pageNumber = Number(e.target.textContent);
-      clearMarkup(movieList);
-      fetchMoviesInSearchLine(searchQuery, pageNumber)
-        .then(({ results, total_pages }) => {
+  if (!searchQuery) {
+    return;
+  } else {
+    let pageNumber = 1;
+    fetchMoviesInSearchLine(searchQuery)
+      .then(({ results, total_results, total_pages }) => {
+        if (!total_results) {
+          error.classList.remove('is-shown');
+          return;
+        } else {
+          resultList.classList.add('is-hidden');
+          form.classList.remove('input-change');
           renderMovieList(results);
-          const { height: cardHeight } = document
-            .querySelector('.movie-list')
-            .firstElementChild.getBoundingClientRect();
-          window.scrollBy({
-            top: -cardHeight * 7,
-            behavior: 'smooth',
-          });
-          clearMarkup(paginationList);
           makePagination(pageNumber, total_pages);
-          makeButtonDisabled(pageNumber, total_pages);
+          makeButtonDisabled(pageNumber);
           makeButtonActive(pageNumber);
-        })
-        .catch(error => console.log(error));
-    }
-  });
+        }
+      })
+      .catch(error => console.log(error));
 
-  const backwardButton = document.querySelector('.arrow-left');
-  const forwardButton = document.querySelector('.arrow-right');
-  backwardButton.classList.remove('is-hidden');
-  forwardButton.classList.remove('is-hidden');
-  backwardButton.removeEventListener('click', onBackwardButtonClick);
-  backwardButton.addEventListener('click', () => {
-    const buttons = document.querySelectorAll('.pagination-button');
-    [...buttons].find(button => {
-      if (button.classList.contains('active')) {
-        const currentPageNumber = Number(button.textContent);
-        const pageNumberToClick = currentPageNumber - 1;
-        fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
+    paginationList.addEventListener('click', e => {
+      if (e.target.nodeName !== 'BUTTON') {
+        return;
+      }
+      if (e.target.textContent) {
+        const pageNumber = Number(e.target.textContent);
+        clearMarkup(movieList);
+        fetchMoviesInSearchLine(searchQuery, pageNumber)
           .then(({ results, total_pages }) => {
             renderMovieList(results);
             const { height: cardHeight } = document
@@ -103,40 +81,71 @@ function onMovieSearch(e) {
               behavior: 'smooth',
             });
             clearMarkup(paginationList);
-            makePagination(pageNumberToClick, total_pages);
-            makeButtonDisabled(pageNumberToClick, total_pages);
-            makeButtonActive(pageNumberToClick);
+            makePagination(pageNumber, total_pages);
+            makeButtonDisabled(pageNumber, total_pages);
+            makeButtonActive(pageNumber);
           })
           .catch(error => console.log(error));
       }
     });
-  });
-  forwardButton.removeEventListener('click', onForwardButtonClick);
-  forwardButton.addEventListener('click', () => {
-    const buttons = document.querySelectorAll('.pagination-button');
-    [...buttons].find(button => {
-      if (button.classList.contains('active')) {
-        const currentPageNumber = Number(button.textContent);
-        const pageNumberToClick = currentPageNumber + 1;
-        fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
-          .then(({ results, total_pages }) => {
-            renderMovieList(results);
-            const { height: cardHeight } = document
-              .querySelector('.movie-list')
-              .firstElementChild.getBoundingClientRect();
-            window.scrollBy({
-              top: -cardHeight * 7,
-              behavior: 'smooth',
-            });
-            clearMarkup(paginationList);
-            makePagination(pageNumberToClick, total_pages);
-            makeButtonDisabled(pageNumberToClick, total_pages);
-            makeButtonActive(pageNumberToClick);
-          })
-          .catch(error => console.log(error));
-      }
+
+    const backwardButton = document.querySelector('.arrow-left');
+    const forwardButton = document.querySelector('.arrow-right');
+    backwardButton.classList.remove('is-hidden');
+    forwardButton.classList.remove('is-hidden');
+    backwardButton.removeEventListener('click', onBackwardButtonClick);
+    backwardButton.addEventListener('click', () => {
+      const buttons = document.querySelectorAll('.pagination-button');
+      [...buttons].find(button => {
+        if (button.classList.contains('active')) {
+          const currentPageNumber = Number(button.textContent);
+          const pageNumberToClick = currentPageNumber - 1;
+          fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
+            .then(({ results, total_pages }) => {
+              renderMovieList(results);
+              const { height: cardHeight } = document
+                .querySelector('.movie-list')
+                .firstElementChild.getBoundingClientRect();
+              window.scrollBy({
+                top: -cardHeight * 7,
+                behavior: 'smooth',
+              });
+              clearMarkup(paginationList);
+              makePagination(pageNumberToClick, total_pages);
+              makeButtonDisabled(pageNumberToClick, total_pages);
+              makeButtonActive(pageNumberToClick);
+            })
+            .catch(error => console.log(error));
+        }
+      });
     });
-  });
+    forwardButton.removeEventListener('click', onForwardButtonClick);
+    forwardButton.addEventListener('click', () => {
+      const buttons = document.querySelectorAll('.pagination-button');
+      [...buttons].find(button => {
+        if (button.classList.contains('active')) {
+          const currentPageNumber = Number(button.textContent);
+          const pageNumberToClick = currentPageNumber + 1;
+          fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
+            .then(({ results, total_pages }) => {
+              renderMovieList(results);
+              const { height: cardHeight } = document
+                .querySelector('.movie-list')
+                .firstElementChild.getBoundingClientRect();
+              window.scrollBy({
+                top: -cardHeight * 7,
+                behavior: 'smooth',
+              });
+              clearMarkup(paginationList);
+              makePagination(pageNumberToClick, total_pages);
+              makeButtonDisabled(pageNumberToClick, total_pages);
+              makeButtonActive(pageNumberToClick);
+            })
+            .catch(error => console.log(error));
+        }
+      });
+    });
+  }
   form.reset();
 }
 
