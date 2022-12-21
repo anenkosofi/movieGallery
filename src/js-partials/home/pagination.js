@@ -94,11 +94,35 @@ function makePagination(currentPageNumber, lastPageNumber) {
   const lastButton = `<li class="pagination-item"><button class="pagination-button" type="button">${lastPageNumber}</button></li>`;
 
   if (lastPageNumber <= 6) {
-    for (let i = 1; i <= lastPageNumber; i += 1) {
-      buttonArray.push(i);
+    if (bodyRect.width < 768) {
+      if (lastPageNumber === 6) {
+        if (currentPageNumber >= 1 && currentPageNumber <= 3) {
+          numberOfButtons = 5;
+          for (let i = 1; i <= numberOfButtons; i += 1) {
+            buttonArray.push(i);
+          }
+        } else if (currentPageNumber >= 4 && currentPageNumber <= 6) {
+          numberOfButtons = 5;
+          for (let i = 2; i <= numberOfButtons; i += 1) {
+            buttonArray.push(i);
+          }
+        }
+        const markup = buttonMarkup(buttonArray);
+        paginationMarkup = `${markup}`;
+      } else if (lastPageNumber <= 5) {
+        for (let i = 1; i <= lastPageNumber; i += 1) {
+          buttonArray.push(i);
+        }
+        const markup = buttonMarkup(buttonArray);
+        paginationMarkup = `${markup}`;
+      }
+    } else {
+      for (let i = 1; i <= lastPageNumber; i += 1) {
+        buttonArray.push(i);
+      }
+      const markup = buttonMarkup(buttonArray);
+      paginationMarkup = `${markup}`;
     }
-    const markup = buttonMarkup(buttonArray);
-    paginationMarkup = `${markup}`;
   } else if (lastPageNumber > 6) {
     if (currentPageNumber >= 1 && currentPageNumber <= 4) {
       numberOfButtons = 5;
