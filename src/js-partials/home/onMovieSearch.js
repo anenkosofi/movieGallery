@@ -65,6 +65,13 @@ function onMovieSearch(e) {
       fetchMoviesInSearchLine(searchQuery, pageNumber)
         .then(({ results, total_pages }) => {
           renderMovieList(results);
+          const { height: cardHeight } = document
+            .querySelector('.movie-list')
+            .firstElementChild.getBoundingClientRect();
+          window.scrollBy({
+            top: -cardHeight * 7,
+            behavior: 'smooth',
+          });
           clearMarkup(paginationList);
           makePagination(pageNumber, total_pages);
           makeButtonDisabled(pageNumber, total_pages);
@@ -88,6 +95,13 @@ function onMovieSearch(e) {
         fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
           .then(({ results, total_pages }) => {
             renderMovieList(results);
+            const { height: cardHeight } = document
+              .querySelector('.movie-list')
+              .firstElementChild.getBoundingClientRect();
+            window.scrollBy({
+              top: -cardHeight * 7,
+              behavior: 'smooth',
+            });
             clearMarkup(paginationList);
             makePagination(pageNumberToClick, total_pages);
             makeButtonDisabled(pageNumberToClick, total_pages);
@@ -107,6 +121,13 @@ function onMovieSearch(e) {
         fetchMoviesInSearchLine(searchQuery, pageNumberToClick)
           .then(({ results, total_pages }) => {
             renderMovieList(results);
+            const { height: cardHeight } = document
+              .querySelector('.movie-list')
+              .firstElementChild.getBoundingClientRect();
+            window.scrollBy({
+              top: -cardHeight * 7,
+              behavior: 'smooth',
+            });
             clearMarkup(paginationList);
             makePagination(pageNumberToClick, total_pages);
             makeButtonDisabled(pageNumberToClick, total_pages);

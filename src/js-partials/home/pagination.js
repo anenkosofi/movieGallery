@@ -16,6 +16,13 @@ function onBackwardButtonClick() {
       fetchMovies(pageNumberToClick)
         .then(({ results, total_pages }) => {
           renderMovieList(results);
+          const { height: cardHeight } = document
+            .querySelector('.movie-list')
+            .firstElementChild.getBoundingClientRect();
+          window.scrollBy({
+            top: -cardHeight * 7,
+            behavior: 'smooth',
+          });
           clearMarkup(paginationList);
           makePagination(pageNumberToClick, total_pages);
           makeButtonDisabled(pageNumberToClick, total_pages);
@@ -35,6 +42,13 @@ function onForwardButtonClick() {
       fetchMovies(pageNumberToClick)
         .then(({ results, total_pages }) => {
           renderMovieList(results);
+          const { height: cardHeight } = document
+            .querySelector('.movie-list')
+            .firstElementChild.getBoundingClientRect();
+          window.scrollBy({
+            top: -cardHeight * 7,
+            behavior: 'smooth',
+          });
           clearMarkup(paginationList);
           makePagination(pageNumberToClick, total_pages);
           makeButtonDisabled(pageNumberToClick, total_pages);
@@ -190,6 +204,13 @@ function onButtonClick(e) {
     fetchMovies(pageNumber)
       .then(({ results, total_pages }) => {
         renderMovieList(results);
+        const { height: cardHeight } = document
+          .querySelector('.movie-list')
+          .firstElementChild.getBoundingClientRect();
+        window.scrollBy({
+          top: -cardHeight * 7,
+          behavior: 'smooth',
+        });
         clearMarkup(paginationList);
         makePagination(pageNumber, total_pages);
         makeButtonDisabled(pageNumber);

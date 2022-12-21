@@ -61,7 +61,16 @@
 }
 
 .movie-image {
+  height: 398px;
   object-fit: cover;
+
+  @media screen and (min-width: 768px) {
+    height: 455px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    height: 574px;
+  }
 }
 
 .movie-descr {
