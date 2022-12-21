@@ -11,6 +11,8 @@ const onButtonAppear = function (entries, observer) {
   entries.forEach(entry => {
     if (!entry.isIntersecting) {
       scrollButton.classList.remove('is-hidden');
+    } else if (entry.isIntersecting) {
+      scrollButton.classList.add('is-hidden');
     }
   });
 };
